@@ -30,7 +30,7 @@ export type TypedResult<T extends QueryType> =
       [Key in keyof T]: QueryValue<T[Key]>
     }
 
-export type ColumnPropertyType = {
+export type ColumnInfo = {
   columnName: string
   type: Function
   propertyName: string

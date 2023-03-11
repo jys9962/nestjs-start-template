@@ -1,5 +1,5 @@
 import { applyDecorators, SetMetadata } from "@nestjs/common";
-import { MainDbRepository } from "@/providers/mysql/repository/implements/main-db.repository";
+import { MainDbRepository } from "@/shared/mysql/repository/implements/main-db.repository";
 
 export const TRANSACTION_METADATA = "TRANSACTION_METADATA";
 export const TRANSACTION_EXCEPT_METADATA = "TRANSACTION_EXCEPT_METADATA";

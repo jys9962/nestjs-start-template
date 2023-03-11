@@ -1,6 +1,8 @@
 import { QueryOptions } from 'mysql2/promise'
-import { EntityContainer } from "@/providers/mysql/entity-factory/entity-container";
-import { ColumnPropertyType } from "@/providers/mysql/entity-factory/entity-factory.type";
+import { ColumnInfo } from '@/shared/entity-factory/entity-column.type'
+import { NonFunctionProperties } from '@/common/utils/type.util'
+import { EntityColumnContainer } from '@/shared/entity-factory/entity-column.container'
+import { EntityColumnUtil } from '@/shared/entity-factory/entity-column.util'
 
 class SqlParam {
   constructor(
@@ -9,24 +11,24 @@ class SqlParam {
   ) {}
 }
 
-export const COLUMNS = <T, K extends keyof T>(
+export const COLUMNS = <T, K extends keyof NonFunctionProperties<T>>(
   alias: string,
   type: { new(): T },
-  as: `${string}`,
+  as: string,
   pick?: K[],
 ) => {
   const pickSet = Array.isArray(pick) && pick.length ? new Set(pick) : null
-  const columns = EntityContainer
-    .findColumnList(type)
+  const columns = EntityColumnContainer
+    .getInfo(type)
     .filter(
-      (t: ColumnPropertyType) => !pickSet || pickSet.has(t.propertyName as any),
+      (t: ColumnInfo) => !pickSet || pickSet.has(t.propertyName as any),
     )
     .map(
-      (t: ColumnPropertyType) => `${alias}.${t.columnName} as $${as}$_${t.columnName}`)
+      (t: ColumnInfo) => `\`${alias}\`.\`${t.columnName}\` AS \`${EntityColumnUtil.asColumn(as, t.columnName)}\``)
     .join('\n,')
 
   return new SqlParam(
-    columns,
+    `/* ${alias}.${type.name} as ${as} */\n${columns}\n`,
     [],
   )
 }
@@ -37,13 +39,13 @@ export const ARRAYAGG = <T, K extends keyof T>(
   pick?: K[],
 ) => {
   const pickSet = Array.isArray(pick) && pick.length ? new Set(pick) : null
-  const arrayAgg = EntityContainer
-    .findColumnList(type)
+  const arrayAgg = EntityColumnContainer
+    .getInfo(type)
     .filter(
-      (t: ColumnPropertyType) => !pickSet || pickSet.has(t.propertyName as any),
+      (t: ColumnInfo) => !pickSet || pickSet.has(t.propertyName as any),
     )
     .map(
-      (t: ColumnPropertyType) => `'${t.columnName}',${alias}.${t.columnName}`)
+      (t: ColumnInfo) => `'${t.columnName}',${alias}.${t.columnName}`)
     .join('\n,')
 
   return new SqlParam(

@@ -1,14 +1,11 @@
 import { QvColumn } from "@/shared/entity-factory/qv-column";
 
-export class BoardEntity {
+export class MemberEntity {
 
   @QvColumn()
-  id: number;
+  id: number
 
   @QvColumn()
-  title: string;
-
-  @QvColumn()
-  contents: string;
+  name: string
 
 }

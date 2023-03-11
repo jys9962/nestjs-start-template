@@ -1,9 +1,9 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { DiscoveryService, MetadataScanner, ModuleRef, Reflector } from '@nestjs/core'
-import { TRANSACTION_METADATA, TRANSACTION_EXCEPT_METADATA } from '@/providers/mysql/transaction/transaction.decorator'
+import { TRANSACTION_EXCEPT_METADATA, TRANSACTION_METADATA } from '@/shared/mysql/transaction/transaction.decorator'
 import { Pool, PoolConnection } from 'mysql2/promise'
 import { CodeUtil } from '@/common/utils/code.util'
-import { AbstractRepository, QUERY_FUNCTION } from '@/providers/mysql/repository/abstract.repository'
+import { AbstractRepository, QUERY_FUNCTION } from '@/shared/mysql/repository/abstract.repository'
 
 @Injectable()
 export class TransactionService implements OnModuleInit {
@@ -57,7 +57,7 @@ export class TransactionService implements OnModuleInit {
     const $this = this
     const connectionPool: Pool = this.moduleRef.get<Pool>(repositoryToken, { strict: false })
 
-    return async function(...args) {
+    return async function (...args) {
       // @ts-ignore
       const currentInstance = this
 

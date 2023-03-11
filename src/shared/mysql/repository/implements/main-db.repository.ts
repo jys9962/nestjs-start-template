@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common'
 import { Pool, QueryOptions } from 'mysql2/promise'
-import { AbstractRepository, QUERY_FUNCTION } from '@/providers/mysql/repository/abstract.repository'
+import { AbstractRepository, QUERY_FUNCTION } from '@/shared/mysql/repository/abstract.repository'
 
 export class MainDbRepository extends AbstractRepository {
   static token = Symbol('MainDbRepository')
